@@ -148,7 +148,6 @@ public class MainForm {
     private void showAlertMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
-        alert.setHeaderText("Error reading file");
         alert.setContentText(message);
         alert.showAndWait();
     }
