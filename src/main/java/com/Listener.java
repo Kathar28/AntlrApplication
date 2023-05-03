@@ -29,11 +29,9 @@ public class Listener extends JSONBaseListener {
 
     @Override
     public void enterArray(JSONParser.ArrayContext ctx) {
-        Node prevCurrent = current;
         for (JSONParser.ValueContext valueCtx : ctx.value()) {
             handleArrayElement(valueCtx);
         }
-        current = prevCurrent;
     }
 
     private void handleArrayElement(JSONParser.ValueContext ctx) {

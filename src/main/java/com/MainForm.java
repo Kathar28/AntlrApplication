@@ -41,8 +41,8 @@ public class MainForm {
 
     private void drawingAllElements() {
         mainContainer = new BorderPane();
-        treeView = getTreeView();
-        textArea = getTextArea();
+        treeView = createTreeView();
+        textArea = createTextArea();
         mainContainer.setCenter(drawTreeViewAndTextArea());
         mainContainer.setTop(drawLabelAndButtons());
     }
@@ -71,7 +71,10 @@ public class MainForm {
         loadFileButton.setOnAction(actionEvent -> {
             try {
                 readFile();
-                if (file != null) fileName.setText("Имя файла: " + file.getName());
+                if (file != null) {
+                    fileName.setText("Имя файла: " + file.getName());
+                    treeView.setRoot(null);
+                }
             } catch (IOException e) {
                 showAlertMessage(e.getMessage());
             }
@@ -79,9 +82,9 @@ public class MainForm {
         HBox.setHgrow(loadFileButton, Priority.ALWAYS);
         Button parseButton = new Button("Выполнить парсинг");
         parseButton.setOnAction(actionEvent -> {
-            if(textArea.getText().isEmpty() || textArea.getText().equals("")){
+            if (textArea.getText().isEmpty() || textArea.getText().equals("")) {
                 showAlertMessage("В текстовом поле пусто. Введите текст или выбирите файл.");
-            }else {
+            } else {
                 treeView.setRoot(fillTree(getDataFromJSON()));
             }
         });
@@ -101,7 +104,7 @@ public class MainForm {
         return rootTreeItem;
     }
 
-    public TreeView<Node> getTreeView() {
+    public TreeView<Node> createTreeView() {
         TreeView<Node> tree;
         if (file != null) {
             tree = new TreeView<>(fillTree(getDataFromJSON()));
@@ -123,7 +126,7 @@ public class MainForm {
         return listener.getCurrent();
     }
 
-    public TextArea getTextArea() {
+    public TextArea createTextArea() {
         TextArea text = new TextArea();
         text.setPrefSize(450, 450);
         text.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
@@ -142,7 +145,7 @@ public class MainForm {
         }
     }
 
-    private void showAlertMessage(String message){
+    private void showAlertMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText("Error reading file");

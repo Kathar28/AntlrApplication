@@ -17,8 +17,8 @@ public class Node {
     }
 
     public void addChildrenNode(Node node) {
+        node.parentNode = this;
         this.childrenNodes.add(node);
-        node.setParentNode(this);
     }
 
     public List<Node> getChildrenNodes() {
@@ -29,24 +29,12 @@ public class Node {
         return parentNode;
     }
 
-    private void setParentNode(Node parentNode) {
-        this.parentNode = parentNode;
-    }
-
     public String getKeyName() {
         return keyName;
     }
 
     public String getValue() {
         return value;
-    }
-
-    public boolean isLeaf() {
-        return childrenNodes.isEmpty();
-    }
-
-    public boolean isRoot() {
-        return parentNode == null;
     }
 }
 
