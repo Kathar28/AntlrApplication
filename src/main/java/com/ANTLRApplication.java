@@ -1,18 +1,21 @@
 package com;
 
+import com.controller.MainFormController;
+import com.model.MainFormModel;
+import com.view.MainFormView;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-import java.io.IOException;
-
 public class ANTLRApplication extends javafx.application.Application {
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage){
 
         primaryStage.setTitle("ANTLR");
-        MainForm form = new MainForm(primaryStage);
+        MainFormModel model = new MainFormModel();
+        MainFormController controller = new MainFormController(model);
+        MainFormView view = new MainFormView(primaryStage, controller, model);
         primaryStage.show();
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {

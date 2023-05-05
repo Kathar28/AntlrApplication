@@ -1,5 +1,6 @@
-package com;
+package com.view;
 
+import com.model.Node;
 import javafx.scene.control.TreeCell;
 
 public class NodeTreeCell extends TreeCell<Node> {
