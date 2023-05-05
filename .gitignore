@@ -4,4 +4,4 @@ target
 AntlrApplication.iml
 mvnw
 mvnw.cmd
-src\main\java\com\antlr
+src/main/java/com/antlr/
