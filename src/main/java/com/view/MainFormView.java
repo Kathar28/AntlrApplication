@@ -86,6 +86,11 @@ public class MainFormView {
             if (textArea.getText().isEmpty() || textArea.getText().equals("")) {
                 showAlertMessage("В текстовом поле пусто. Введите текст или выбирите файл.");
             } else {
+                try {
+                    controller.updateRootNode(textArea.getText());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 treeView.setRoot(model.getRootNode());
             }
         });
@@ -120,7 +125,6 @@ public class MainFormView {
         fileChooser.getExtensionFilters().add(extFilter);
 
         model.setFile(fileChooser.showOpenDialog(parentStage));
-        if(model.getFile() != null) controller.updateRootNode();
     }
 
     private void showAlertMessage(String message) {

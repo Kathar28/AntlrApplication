@@ -20,8 +20,8 @@ public class MainFormController {
         this.model = model;
     }
 
-    public void updateRootNode() throws IOException {
-        model.setRootNode(fillTree(getDataFromJSON(model.getFileContext())));
+    public void updateRootNode(String text) throws IOException {
+        model.setRootNode(fillTree(getDataFromJSON(text)));
     }
 
     public Node getDataFromJSON(String text){
