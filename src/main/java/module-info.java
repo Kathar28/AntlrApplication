@@ -4,8 +4,12 @@ module com.antlrapplication {
 
     requires org.controlsfx.controls;
     requires antlr;
-    requires junit;
 
     opens com to javafx.fxml;
     exports com;
+    exports com.model;
+    exports com.controller;
+    opens com.model to javafx.fxml;
+    exports com.view;
+    opens com.view to javafx.fxml;
 }

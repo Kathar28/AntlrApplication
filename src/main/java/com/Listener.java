@@ -2,6 +2,7 @@ package com;
 
 import com.antlr.JSONBaseListener;
 import com.antlr.JSONParser;
+import com.model.Node;
 
 public class Listener extends JSONBaseListener {
 

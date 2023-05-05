@@ -1,7 +1,8 @@
-package com;
+package com.view;
 
-import com.antlr.JSONLexer;
-import com.antlr.JSONParser;
+import com.controller.MainFormController;
+import com.model.MainFormModel;
+import com.model.Node;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -11,26 +12,25 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
-public class MainForm {
+public class MainFormView {
     private final Stage parentStage;
+
+    private BorderPane mainContainer;
 
     private TreeView<Node> treeView;
 
     private TextArea textArea;
 
-    private BorderPane mainContainer;
+    private MainFormController controller;
 
-    private File file;
+    private MainFormModel model;
 
-    public MainForm(Stage parentStage) {
+    public MainFormView(Stage parentStage, MainFormController controller, MainFormModel model) {
+        this.controller = controller;
+        this.model = model;
         drawingAllElements();
         this.parentStage = parentStage;
         Scene mainScene = new Scene(mainContainer);
@@ -71,8 +71,9 @@ public class MainForm {
         loadFileButton.setOnAction(actionEvent -> {
             try {
                 readFile();
-                if (file != null) {
-                    fileName.setText("Имя файла: " + file.getName());
+                if (model.getFile() != null) {
+                    textArea.setText(model.getFileContext());
+                    fileName.setText("Имя файла: " + model.getFile().getName());
                     treeView.setRoot(null);
                 }
             } catch (IOException e) {
@@ -85,7 +86,7 @@ public class MainForm {
             if (textArea.getText().isEmpty() || textArea.getText().equals("")) {
                 showAlertMessage("В текстовом поле пусто. Введите текст или выбирите файл.");
             } else {
-                treeView.setRoot(fillTree(getDataFromJSON()));
+                treeView.setRoot(model.getRootNode());
             }
         });
 
@@ -96,34 +97,13 @@ public class MainForm {
         return hBox;
     }
 
-    private TreeItem<Node> fillTree(Node rootNode) {
-        TreeItem<Node> rootTreeItem = new TreeItem<>(rootNode);
-        for (Node childNode : rootNode.getChildrenNodes()) {
-            rootTreeItem.getChildren().add(fillTree(childNode));
-        }
-        return rootTreeItem;
-    }
-
     public TreeView<Node> createTreeView() {
         TreeView<Node> tree;
-        if (file != null) {
-            tree = new TreeView<>(fillTree(getDataFromJSON()));
-        } else tree = new TreeView<>();
+        tree = new TreeView<>();
         tree.setPrefSize(450, 450);
         tree.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         tree.setCellFactory(cf -> new NodeTreeCell());
         return tree;
-    }
-
-    public Node getDataFromJSON() {
-        JSONLexer lexer = new JSONLexer(CharStreams.fromString(textArea.getText()));
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        JSONParser parser = new JSONParser(tokens);
-        Listener listener = new Listener();
-
-        ParseTreeWalker walker = new ParseTreeWalker();
-        walker.walk(listener, parser.json());
-        return listener.getCurrent();
     }
 
     public TextArea createTextArea() {
@@ -133,16 +113,14 @@ public class MainForm {
         return text;
     }
 
-    private void readFile() throws IOException {
+    public void readFile() throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Открыть файл");
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON файлы (*.json)", "*.json");
         fileChooser.getExtensionFilters().add(extFilter);
 
-        file = fileChooser.showOpenDialog(parentStage);
-        if (file != null) {
-            textArea.setText(new String(Files.readAllBytes(Paths.get(file.getPath()))));
-        }
+        model.setFile(fileChooser.showOpenDialog(parentStage));
+        if(model.getFile() != null) controller.updateRootNode();
     }
 
     private void showAlertMessage(String message) {
